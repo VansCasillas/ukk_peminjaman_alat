@@ -18,8 +18,8 @@
             <div class="alert alert-success">{{ session('status') }}</div>
             @endif
         </div>
-        <button class="btn btn-success m-3" onclick="window.print()">Cetak</button>
-        <div id="area-print">
+        <a href="#" class="btn btn-success m-3" onclick="printTable()">Cetak</a>
+        <div>
             <div class="card-body px-3 pb-2">
                 <div class="table-responsive p-0">
                     <table class="table align-items-center mb-0" id="siswa">
@@ -38,7 +38,6 @@
 
                         <tbody>
                             @foreach ($peminjamanalat as $pemalt)
-                            @if ($pemalt->detailAlat->status == 'dipinjam' || $pemalt->detailAlat->status == 'dikembalikan')
                             <tr>
                                 <td class="text-center align-middle text-sm">{{ $loop->iteration }}</td>
                                 <td class="text-center align-middle text-sm">{{ $pemalt->alat->nama_alat }}</td>
@@ -49,7 +48,6 @@
                                 <td class="text-center align-middle text-left text-sm">{{ $pemalt->detailAlat->status ?? 'Belum Diperiksa' }}</td>
                                 <td class="text-center align-middle text-left text-sm">{{ $pemalt->detailAlat->persetujuan ?? 'Belum Disetujui' }}</td>
                             </tr>
-                            @endif
                             @endforeach
                         </tbody>
                     </table>
@@ -59,31 +57,34 @@
     </div>
 </div>
 <style>
-    @media print {
-
-        /* SEMBUNYIKAN SEMUA */
-        body * {
-            visibility: hidden;
-        }
-
-        /* TAMPILKAN AREA PRINT SAJA */
-        #area-print,
-        #area-print * {
-            visibility: visible;
-        }
-
-        #area-print {
-            width: 100%;
-        }
+@media print {
+    body * {
+        visibility: hidden;
     }
+
+    table, table * {
+        visibility: visible;
+    }
+
+    table {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+    }
+}
 </style>
 <script>
     $(document).ready(function() {
         $('#siswa').DataTable({
-            paging: false,
-            searching: false,
-            info: false
         });
     });
+
+    function printTable() {
+    let table = $('#siswa').DataTable();
+    table.destroy(); // matikan DataTables sementara
+    window.print();
+    location.reload(); // reload biar DataTables balik lagi
+}
 </script>
 @endsection

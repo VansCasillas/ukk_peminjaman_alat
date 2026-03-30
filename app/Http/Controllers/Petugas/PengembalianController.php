@@ -13,7 +13,9 @@ class PengembalianController extends Controller
      */
     public function index()
     {
-        $peminjamanalat = PeminjamanAlat::with(['alat.kategori'])->get();
+        $peminjamanalat = PeminjamanAlat::whereHas('detailAlat', function ($q) {
+            $q->where('status', 'dikembalikan');
+        })->get();
         return view('petugas.pengembalian.index', compact('peminjamanalat'));
     }
 
@@ -52,10 +54,7 @@ class PengembalianController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
-    {
-        
-    }
+    public function update(Request $request, string $id) {}
 
     /**
      * Remove the specified resource from storage.
